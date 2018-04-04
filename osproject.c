@@ -22,9 +22,9 @@ void Queue1(int pid ,int burst,int prior){
             temp->process_id=pid;
             temp->burst_time=burst;
             temp->priority=prior;
-            temp->wait_time=0;
-            temp->end_time=0;
-            temp->b=burst;
+     //       temp->wait_time=0;
+       //     temp->end_time=0;
+         //   temp->b=burst;
             temp->next=NULL;
             if(queue1==NULL)
             {
@@ -50,9 +50,9 @@ void Queue2(int pid,int burst,int prior)
     temp->burst_time=burst;
     temp->process_id=pid;
     temp->priority=prior;
-    temp->wait_time=0;
-    temp->end_time=0;
-    temp->b=burst;
+ //   temp->wait_time=0;
+   // temp->end_time=0;
+   // temp->b=burst;
     temp->next=NULL;
     if(queue2==NULL)
     {
@@ -83,9 +83,9 @@ void Queue3(int pid ,int burst,int prior){
             temp->process_id=pid;
             temp->burst_time=burst;
             temp->priority=prior;
-            temp->wait_time=0;
-            temp->end_time=0;
-            temp->b=burst;
+           // temp->wait_time=0;
+           // temp->end_time=0;
+           // temp->b=burst;
             temp->next=NULL;
             if(queue3==NULL)
              {
@@ -141,6 +141,70 @@ void Insert(int burst,int prior,int pid)
     }
     
 }
+void roundrobin_scheduling()
+{
+	if(isEmpty(queue1))
+        return;
+    struct Process* ptr=queue1;
+    int time_quantum=4,outer_time=10;
+    while(outer_time!=0)
+    {
+        if(process_exhausted(queue1))
+            return;
+        if(ptr->burst_time==0)
+        {
+            if(ptr->next==NULL)
+                ptr=queue1;
+            else
+                ptr=ptr->next;
+            continue;
+        }
+         if(time_quantum<=outer_time&&time_quantum<ptr->burst_time)
+        {
+        	printf("\n  P%d  %10d ",ptr->process_id,counter);
+            ptr->wait_time+=counter-ptr->end_time;
+            
+            outer_time-=time_quantum;
+            ptr->burst_time-=time_quantum;
+            counter+=4;
+            ptr->end_time=counter;
+            printf("%10d\n",counter);
+            if(ptr->next==NULL)
+                ptr=queue1;
+            else
+                ptr=ptr->next;
+        }
+        
+       else if(time_quantum<=outer_time&&time_quantum>=ptr->burst_time)
+        {
+
+            printf("\n  P%d  %10d ",ptr->process_id,counter);
+            ptr->wait_time+=counter-ptr->end_time;
+			outer_time-=ptr->burst_time;
+            counter+=ptr->burst_time;
+            ptr->end_time=counter;
+            printf("%10d\n",counter);
+            ptr->burst_time=0;
+            if(ptr->next==NULL)
+                ptr=queue1;
+            else
+                ptr=ptr->next;
+        }
+        
+        else{
+           
+            ptr->wait_time+=counter-ptr->end_time;
+            printf("\n  P%d  %10d ",ptr->process_id,counter);
+            ptr->burst_time-=outer_time;
+            counter+=outer_time; 
+            ptr->burst_time=0;
+			ptr->end_time=counter;
+            printf("%10d\n",counter);
+            outer_time=0;
+        }
+
+    }
+}
 
 int main()
 {
@@ -166,11 +230,11 @@ int main()
         
     }
     
-   /*while(!process_exhausted(queue1)||!process_exhausted(queue2)||!process_exhausted(queue3))
+   while(!process_exhausted(queue1)||!process_exhausted(queue2)||!process_exhausted(queue3))
 	{
 	roundrobin_scheduling();
-	priority_scheduling();
-	FCFS();*/
+	//priority_scheduling();
+	//FCFS();
 }
-
+}
 
