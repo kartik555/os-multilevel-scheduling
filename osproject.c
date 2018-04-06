@@ -206,6 +206,53 @@ void roundrobin_scheduling()
     }
 }
 
+void priority_scheduling()
+{
+	int outer_time=10;
+	 if(isEmpty(queue2))
+        return;
+    struct Process* ptr=queue2;
+    int total_time=10;
+    while(total_time>0)
+    {
+        if(process_exhausted(queue2))
+        {
+            return;
+        }
+        if(ptr->burst_time==0)
+        {
+            if(ptr->next==NULL)
+                ptr=queue2;
+            else
+                ptr=ptr->next;
+            continue;
+        }
+        if(total_time>=ptr->burst_time)
+        {
+           	ptr->wait_time+=counter-ptr->end_time;
+            printf("\n  P%d  %10d ",ptr->process_id,counter);
+            outer_time-=ptr->burst_time;
+            counter+=ptr->burst_time;
+            ptr->end_time=counter;
+            printf("%10d\n",counter);
+            ptr->burst_time=0;
+            if(ptr->next==NULL)
+                ptr=queue2;
+            else
+                ptr=ptr->next;
+        }
+        else{
+            ptr->wait_time+=counter-ptr->end_time;
+            printf("\n  P%d  %10d ",ptr->process_id,counter);
+            ptr->burst_time-=outer_time;
+            counter+=outer_time;
+            ptr->end_time=counter;
+            printf("%10d\n",counter);
+            outer_time=0;
+        }
+    }
+}
+
 int main()
 {
 	printf("            ****This Program is for Mulitlevel Queue Scheduling*****\n\n");
@@ -233,7 +280,7 @@ int main()
    while(!process_exhausted(queue1)||!process_exhausted(queue2)||!process_exhausted(queue3))
 	{
 	roundrobin_scheduling();
-	//priority_scheduling();
+	priority_scheduling();
 	//FCFS();
 }
 }
