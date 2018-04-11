@@ -22,9 +22,9 @@ void Queue1(int pid ,int burst,int prior){
             temp->process_id=pid;
             temp->burst_time=burst;
             temp->priority=prior;
-     //       temp->wait_time=0;
-       //     temp->end_time=0;
-         //   temp->b=burst;
+            temp->wait_time=0;
+            temp->end_time=0;
+            temp->b=burst;
             temp->next=NULL;
             if(queue1==NULL)
             {
@@ -50,9 +50,9 @@ void Queue2(int pid,int burst,int prior)
     temp->burst_time=burst;
     temp->process_id=pid;
     temp->priority=prior;
- //   temp->wait_time=0;
-   // temp->end_time=0;
-   // temp->b=burst;
+    temp->wait_time=0;
+    temp->end_time=0;
+    temp->b=burst;
     temp->next=NULL;
     if(queue2==NULL)
     {
@@ -83,9 +83,9 @@ void Queue3(int pid ,int burst,int prior){
             temp->process_id=pid;
             temp->burst_time=burst;
             temp->priority=prior;
-           // temp->wait_time=0;
-           // temp->end_time=0;
-           // temp->b=burst;
+            temp->wait_time=0;
+            temp->end_time=0;
+            temp->b=burst;
             temp->next=NULL;
             if(queue3==NULL)
              {
@@ -302,6 +302,39 @@ void FCFS()
     }
     
 }
+
+void average_time()
+{
+    float total_time=0,total_turn_around=0;
+    struct Process* ptr=queue1;
+    while(ptr!=NULL)
+    {
+        total_time+=ptr->wait_time;
+        total_turn_around+=ptr->b+ptr->wait_time;
+        ptr=ptr->next;
+    }
+    ptr=queue2;
+    while(ptr!=NULL)
+    {
+        total_time+=ptr->wait_time;
+        total_turn_around+=ptr->b+ptr->wait_time;
+        ptr=ptr->next;
+    }
+    ptr=queue3;
+    while(ptr!=NULL)
+    {
+        total_time+=ptr->wait_time;
+        total_turn_around+=ptr->b+ptr->wait_time;
+        ptr=ptr->next;
+    }
+    
+    average_waiting_time=total_time/process_count;
+    average_turnaround=total_turn_around/process_count;
+    printf("\nAverage waiting time is: %.3f",average_waiting_time);
+	printf("\nAverage turn around time is %.3f",average_turnaround);
+	average_waiting_time=0;average_turnaround=0;
+}
+
 int main()
 {
 	printf("            ****This Program is for Mulitlevel Queue Scheduling*****\n\n");
@@ -326,11 +359,15 @@ int main()
         
     }
     
+    printf("\n\t\tThe table is for process start time and end time ");
+    printf("\n\n Process     Start time      End time\n");
+    
    while(!process_exhausted(queue1)||!process_exhausted(queue2)||!process_exhausted(queue3))
 	{
 	roundrobin_scheduling();
 	priority_scheduling();
 	FCFS();
 }
+	average_time();
 }
 
